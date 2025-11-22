@@ -1,0 +1,31 @@
+# Core scientific computing libraries
+numpy>=1.24.0
+scipy>=1.10.0
+
+# Quantum computing libraries
+qiskit>=0.45.0
+
+# Python interface (assuming pyint was meant to be a Python integration library)
+# Note: If pyint was meant to be something specific, please specify
+
+# Additional useful libraries for game development
+
+# Blender Python API (bpy)
+# Note: bpy is typically bundled with Blender and cannot be installed via pip
+# For standalone use, you would need to install bpy-standalone or use Blender's Python
+
+# UPBGE Python API
+# Note: UPBGE scripts run within the UPBGE/Blender environment
+# and have access to bpy, bge (Blender Game Engine) modules
+
+# Testing libraries
+pytest>=7.4.0
+pytest-cov>=4.1.0
+
+# Development tools
+black>=23.0.0  # Code formatter
+pylint>=2.17.0  # Linter
+mypy>=1.4.0  # Type checker
+
+upbge-stubs>=0.3.0  # Type stubs for UPBGE
+bpystubgen>=0.2.7 # Type stubs generator for bpy
