@@ -1,6 +1,6 @@
 # Core scientific computing libraries
 numpy>=1.24.0
-scipy>=1.10.0
+scipy>=1.16.2
 
 # Quantum computing libraries
 qiskit>=0.45.0
@@ -29,3 +29,5 @@ mypy>=1.4.0  # Type checker
 
 upbge-stubs>=0.3.0  # Type stubs for UPBGE
 bpystubgen>=0.2.7 # Type stubs generator for bpy
+
+scipy-stubs>=1.16.2  # Type stubs for SciPy
