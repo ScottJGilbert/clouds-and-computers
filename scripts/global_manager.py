@@ -1,7 +1,6 @@
 from typing import Optional, Callable, Any, TypedDict
 import numpy as np
 from numpy.typing import NDArray
-
 class OrbitalData(TypedDict):
     n: int
     l: int
