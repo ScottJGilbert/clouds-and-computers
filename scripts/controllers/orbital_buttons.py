@@ -1,30 +1,37 @@
 import bge
 from bge import logic
-from scripts.global_manager import GlobalControllerManager, GlobalStorage
+from scripts.global_manager import GlobalControllerManager, GlobalStorage, OrbitalData
 
 def save_orbital():
     '''
     Saves the current orbital configuration.
     This is useful for restoring previous states.
+
+    When determining quantum numbers, take the percent of available numbers and round to nearest integer.
+    n: principal quantum number | 1 - 4
+    l: azimuthal quantum number | 0 - 3
+    m: magnetic quantum number  | -2 - 2
     '''
     obj = logic.getCurrentController().owner
 
-    GlobalStorage.past_state_vectors.append(GlobalStorage.state_vector.copy())
+    ve = GlobalStorage.state_vector
 
-def delete_orbital():
+    orbital_data: OrbitalData = {
+        "n": round(ve[0].real * 3) + 1,
+        "l": round(ve[1].real * 3),
+        "m": round((ve[2].real + 1) * 2),
+        "color": (ve[3].real, ve[4].real, ve[5].real, ve[6].real, ve[7].real)
+    }
+    GlobalStorage.orbitals.append(orbital_data)
+
+def clear_orbitals():
     '''
-    Deletes the last saved orbital configuration.
+    Deletes the all saved orbital configurations.
     This is useful for managing memory and state history.
     '''
     obj = logic.getCurrentController().owner
 
-def toggle_visibility():
-    '''
-    Toggles the visibility of the orbital representation.
-    This is useful for focusing on different aspects of the simulation.
-    '''
-    obj = logic.getCurrentController().owner
+    GlobalStorage.orbitals.clear()
 
 GlobalControllerManager.save_orbital_function = save_orbital
-GlobalControllerManager.delete_orbital_function = delete_orbital
-GlobalControllerManager.toggle_visibility_function = toggle_visibility
+GlobalControllerManager.clear_orbitals_function = clear_orbitals

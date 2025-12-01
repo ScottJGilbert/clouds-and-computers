@@ -1,11 +1,17 @@
-from typing import Optional, Callable, Any
+from typing import Optional, Callable, Any, TypedDict
 import numpy as np
 from numpy.typing import NDArray
+
+class OrbitalData(TypedDict):
+    n: int
+    l: int
+    m: int
+    color: tuple[float, float, float, float, float] # CMYKA
 
 class GlobalStorage:
     # State Vector Storage
     state_vector: NDArray[np.float64] = np.array([])
-    past_state_vectors: list[NDArray[np.float64]] = []
+    orbitals: list[OrbitalData] = []
 
     # Qubit Selection
     selected_qubit_one: int = 1
@@ -48,17 +54,11 @@ class GlobalControllerManager:
         if callable(cls.save_orbital_function):
             cls.save_orbital_function()
 
-    delete_orbital_function: Optional[Callable[..., Any]] = None
+    clear_orbitals_function: Optional[Callable[..., Any]] = None
     @classmethod
-    def delete_orbital(cls) -> None:
-        if callable(cls.delete_orbital_function):
-            cls.delete_orbital_function()
-
-    toggle_visibility_function: Optional[Callable[..., Any]] = None
-    @classmethod
-    def toggle_visibility(cls) -> None:
-        if callable(cls.toggle_visibility_function):
-            cls.toggle_visibility_function()
+    def clear_orbitals(cls) -> None:
+        if callable(cls.clear_orbitals_function):
+            cls.clear_orbitals_function()
 
     reshape_orbital_function: Optional[Callable[..., Any]] = None
     @classmethod
@@ -68,6 +68,12 @@ class GlobalControllerManager:
 
 
     # Quantum Gates
+    collapse_state_vector_function: Optional[Callable[..., Any]] = None
+    @classmethod
+    def collapse_state_vector(cls) -> None:
+        if callable(cls.collapse_state_vector_function):
+            cls.collapse_state_vector_function()
+
     apply_hadamard_gate_function: Optional[Callable[..., Any]] = None
     @classmethod
     def apply_hadamard_gate(cls) -> None:

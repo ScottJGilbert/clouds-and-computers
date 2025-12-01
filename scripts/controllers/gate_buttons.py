@@ -3,6 +3,29 @@ from bge import logic
 import numpy as np
 from scripts.global_manager import GlobalControllerManager, GlobalStorage
 
+def collapse_state_vector() -> None:
+    '''
+    Collapses the state vector to a random weighted bit sequence.
+    The vector will end with a certain defined magnitude/direction/color.
+    '''
+    obj = logic.getCurrentController().owner
+    # Logic for collapsing GlobalStorage.state_vector
+
+    ve = GlobalStorage.state_vector
+    num_states = len(ve)
+    
+    probabilities = np.abs(ve)**2
+    probabilities /= np.sum(probabilities)
+    
+    collapsed_index = np.random.choice(num_states, p=probabilities)
+    
+    new_ve = np.zeros_like(ve)
+    new_ve[collapsed_index] = 1.0
+    
+    GlobalStorage.state_vector = new_ve
+
+    GlobalControllerManager.align_state_vector();
+
 def hadamard_gate() -> None:
     '''
     Applies the Hadamard gate to the state vector.
