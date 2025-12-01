@@ -2,6 +2,10 @@ from typing import Optional, Callable, Any
 import numpy as np
 from numpy.typing import NDArray
 
+'''
+Global storage for quantum state and orbital operations.
+'''
+
 class GlobalStorage:
     # State Vector Storage
     state_vector: NDArray[np.float64] = np.array([])
