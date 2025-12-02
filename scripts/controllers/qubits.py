@@ -6,7 +6,6 @@ from scripts.global_manager import GlobalControllerManager, GlobalStorage
 def align_qubits() -> None:
     '''
     Aligns qubits to a specific basis.
-    This is useful for preparing qubits for measurement.
     '''
 
     ve = GlobalStorage.state_vector
@@ -34,8 +33,9 @@ def select_qubit_two() -> None:
     This is useful for targeted quantum gate applications.
     '''
     obj = logic.getCurrentController().owner
+    blender_obj = obj.blenderObject
 
-    selected_index = obj["qubit_index"]
+    selected_index = blender_obj["qubit_index"]
     
     prev_selected_one = GlobalStorage.selected_qubit_one
     if (prev_selected_one >= selected_index):

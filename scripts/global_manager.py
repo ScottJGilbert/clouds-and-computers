@@ -7,6 +7,10 @@ class OrbitalData(TypedDict):
     m: int
     color: tuple[float, float, float, float, float] # CMYKA
 
+class GlobalConstants:
+    num_particles: int = 20000
+    timestep: float = 0.01
+
 class GlobalStorage:
     # State Vector Storage
     state_vector: NDArray[np.float64] = np.array([])
