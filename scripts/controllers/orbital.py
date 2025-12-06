@@ -1,8 +1,8 @@
-import bge
 from bge import logic
 import numpy as np
 from numpy.typing import NDArray
-from scripts.global_manager import GlobalControllerManager, GlobalStorage, GlobalConstants
+from scripts.global_manager import GlobalConstants
+# from scripts.global_manager import GlobalControllerManager
 from wavefunction import wavefunction_superposition_multiple, guiding_equation_superposition_multiple
 
 def reshape_orbital() -> None:
@@ -13,7 +13,7 @@ def reshape_orbital() -> None:
     obj = logic.getCurrentController().owner
     blender_obj = obj.blenderObject
 
-    orbital_data = GlobalStorage.orbitals
+    orbital_data = logic.globalDict.get("orbitals", [])
 
     pys = blender_obj.particle_systems[0]
 
@@ -70,14 +70,19 @@ def apply_velocity_to_orbital() -> None:
     obj = logic.getCurrentController().owner
     blender_obj = obj.blenderObject
 
-    orbital_data = GlobalStorage.orbitals
+    orbital_data = logic.globalDict.get("orbitals", [])
 
     # Access the particle system
     pys = blender_obj.particle_systems[0]
 
     if not pys:
+        return
 
     ps = pys.particles
+
+    if ps.count == 0:
+        return
+
     positions = np.array([particle.location for particle in ps])
     spherical_positions = cartesian_to_spherical(positions[:, 0], positions[:, 1], positions[:, 2])
 
@@ -127,5 +132,3 @@ def spherical_to_cartesian(r: NDArray[np.float64], theta: NDArray[np.float64], p
     y = r * np.sin(theta) * np.sin(phi)
     z = r * np.cos(theta)
     return x, y, z
-
-GlobalControllerManager.reshape_orbital_function = reshape_orbital

@@ -1,5 +1,6 @@
 from bge import logic
-from scripts.global_manager import GlobalControllerManager, GlobalStorage, GlobalConstants
+from scripts.global_manager import GlobalConstants
+# from scripts.global_manager import GlobalControllerManager
 import numpy as np
 from numpy.typing import NDArray
 
@@ -12,7 +13,7 @@ def align_state_vector() -> None:
     blender_obj = obj.blenderObject
 
     # Rotate the state vector to the desired location around the global origin
-    ve = GlobalStorage.state_vector
+    ve: NDArray[np.float64] = logic.globalDict.get("state_vector", np.array([]))
 
     current_angle = blender_obj.rotation_euler
     
@@ -76,6 +77,4 @@ def convert_rgba_to_cmyka(rgba: tuple[float, float, float, float]) -> tuple[floa
     y = (y - k) / (1 - k) if (1 - k) != 0 else 0
 
     return (c, m, y, k, a)
-
-GlobalControllerManager.align_state_vector_function =  align_state_vector
 

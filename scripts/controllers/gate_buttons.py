@@ -1,17 +1,15 @@
-import bge
 from bge import logic
 import numpy as np
-from scripts.global_manager import GlobalControllerManager, GlobalStorage
+# from scripts.global_manager import GlobalControllerManager
 
 def collapse_state_vector() -> None:
     '''
     Collapses the state vector to a random weighted bit sequence.
     The vector will end with a certain defined magnitude/direction/color.
     '''
-    obj = logic.getCurrentController().owner
     # Logic for collapsing GlobalStorage.state_vector
 
-    ve = GlobalStorage.state_vector
+    ve = logic.globalDict.get("state_vector", np.array([]))
     num_states = len(ve)
     
     probabilities = np.abs(ve)**2
@@ -22,137 +20,114 @@ def collapse_state_vector() -> None:
     new_ve = np.zeros_like(ve)
     new_ve[collapsed_index] = 1.0
     
-    GlobalStorage.state_vector = new_ve
-
-    GlobalControllerManager.align_state_vector();
+    logic.globalDict["state_vector"] = new_ve
 
 def hadamard_gate() -> None:
     '''
     Applies the Hadamard gate to the state vector.
     This creates superposition states.
     '''
-    obj = logic.getCurrentController().owner
     # Logic for applying Hadamard gate to GlobalStorage.state_vector
 
     matrix = (1/np.sqrt(2)) * np.array([[1, 1], [1, -1]])
-    ve = GlobalStorage.state_vector
+    ve = logic.globalDict.get("state_vector", np.array([]))
 
-    ve = apply_gate(ve, matrix, GlobalStorage.selected_qubit_one)
+    ve = apply_gate(ve, matrix, logic.globalDict.get("selected_qubit_one", -1))
 
-    GlobalStorage.state_vector = ve
-
-    GlobalControllerManager.align_state_vector();
+    logic.globalDict["state_vector"] = ve
 
 def pauli_x_gate() -> None:
     '''
     Applies the Pauli-X gate to the state vector.
     This flips the qubit state.
     '''
-    obj = logic.getCurrentController().owner
     # Logic for applying Pauli-X gate to GlobalStorage.state_vector
 
     matrix = np.array([[0, 1], [1, 0]])
-    ve = GlobalStorage.state_vector
+    ve = logic.globalDict.get("state_vector", np.array([]))
 
-    ve = apply_gate(ve, matrix, GlobalStorage.selected_qubit_one)
+    ve = apply_gate(ve, matrix, logic.globalDict.get("selected_qubit_one", -1))
 
-    GlobalStorage.state_vector = ve
-
-    GlobalControllerManager.align_state_vector();
+    logic.globalDict["state_vector"] = ve
 
 def pauli_y_gate() -> None:
     '''
     Applies the Pauli-Y gate to the state vector.
     This introduces a phase flip along with state flip.
     '''
-    obj = logic.getCurrentController().owner
     # Logic for applying Pauli-Y gate to GlobalStorage.state_vector
 
     matrix = np.array([[0, -1j], [1j, 0]], dtype=complex)
-    ve = GlobalStorage.state_vector
+    ve = logic.globalDict.get("state_vector", np.array([]))
 
-    ve = apply_gate(ve, matrix, GlobalStorage.selected_qubit_one)
+    ve = apply_gate(ve, matrix, logic.globalDict.get("selected_qubit_one", -1))
 
-    GlobalStorage.state_vector = ve
-
-    GlobalControllerManager.align_state_vector();
+    logic.globalDict["state_vector"] = ve
 
 def pauli_z_gate() -> None:
     '''
     Applies the Pauli-Z gate to the state vector.
     This introduces a phase flip.
     '''
-    obj = logic.getCurrentController().owner
     # Logic for applying Pauli-Z gate to GlobalStorage.state_vector
 
     matrix = np.array([[1, 0], [0, -1]])
-    ve = GlobalStorage.state_vector
+    ve = logic.globalDict.get("state_vector", np.array([]))
 
-    ve = apply_gate(ve, matrix, GlobalStorage.selected_qubit_one)
+    ve = apply_gate(ve, matrix, logic.globalDict.get("selected_qubit_one", -1))
 
-    GlobalStorage.state_vector = ve
-
-    GlobalControllerManager.align_state_vector();
+    logic.globalDict["state_vector"] = ve
 
 def cnot_gate() -> None:
     '''
     Applies the CNOT gate to the state vector.
     This entangles two qubits.
     '''
-    obj = logic.getCurrentController().owner
     # Logic for applying CNOT gate to GlobalStorage.state_vector
 
     matrix = np.array([[1, 0, 0, 0],
                        [0, 1, 0, 0],
                        [0, 0, 0, 1],
                        [0, 0, 1, 0]])
-    ve = GlobalStorage.state_vector
+    ve = logic.globalDict.get("state_vector", np.array([]))
 
-    ve = apply_gate(ve, matrix, GlobalStorage.selected_qubit_one)
+    ve = apply_gate(ve, matrix, logic.globalDict.get("selected_qubit_one", -1))
 
-    GlobalStorage.state_vector = ve
-
-    GlobalControllerManager.align_state_vector();
+    logic.globalDict["state_vector"] = ve
 
 def swap_gate() -> None:
     '''
     Applies the SWAP gate to the state vector.
     This swaps the states of two qubits.
     '''
-    obj = logic.getCurrentController().owner
     # Logic for applying SWAP gate to GlobalStorage.state_vector
 
     matrix = np.array([[1, 0, 0, 0],
                        [0, 0, 1, 0],
                        [0, 1, 0, 0],
                        [0, 0, 0, 1]])
-    ve = GlobalStorage.state_vector
+    ve = logic.globalDict.get("state_vector", np.array([]))
 
-    ve = apply_gate(ve, matrix, GlobalStorage.selected_qubit_one)
+    ve = apply_gate(ve, matrix, logic.globalDict.get("selected_qubit_one", -1))
 
-    GlobalStorage.state_vector = ve
-
-    GlobalControllerManager.align_state_vector();
+    logic.globalDict["state_vector"] = ve
 
 def imaginary_swap_gate() -> None:
     '''
     Applies the iSWAP gate to the state vector.
     This swaps the states of two qubits with a phase factor.
     '''
-    obj = logic.getCurrentController().owner
     # Logic for applying iSWAP gate to GlobalStorage.state_vector
 
     matrix = np.array([[1, 0, 0, 0],
                        [0, 0, 1j, 0],
                        [0, 1j, 0, 0],
                        [0, 0, 0, 1]])
-    ve = GlobalStorage.state_vector
+    ve = logic.globalDict.get("state_vector", np.array([]))
 
-    ve = apply_gate(ve, matrix, GlobalStorage.selected_qubit_one)
+    ve = apply_gate(ve, matrix, logic.globalDict.get("selected_qubit_one", -1))
 
-    GlobalStorage.state_vector = ve
-
-    GlobalControllerManager.align_state_vector();
+    logic.globalDict["state_vector"] = ve
 
 def apply_gate(state_vector: np.ndarray, gate: np.ndarray, qubit_index: int) -> np.ndarray:
     """
@@ -185,11 +160,3 @@ def apply_gate(state_vector: np.ndarray, gate: np.ndarray, qubit_index: int) -> 
     new_state = np.dot(full_gate, state_vector)
     
     return new_state
-
-GlobalControllerManager.apply_hadamard_gate_function = hadamard_gate
-GlobalControllerManager.apply_pauli_x_gate_function = pauli_x_gate
-GlobalControllerManager.apply_pauli_y_gate_function = pauli_y_gate
-GlobalControllerManager.apply_pauli_z_gate_function = pauli_z_gate
-GlobalControllerManager.apply_cnot_gate_function = cnot_gate
-GlobalControllerManager.apply_swap_gate_function = swap_gate
-GlobalControllerManager.apply_imaginary_swap_gate_function = imaginary_swap_gate
