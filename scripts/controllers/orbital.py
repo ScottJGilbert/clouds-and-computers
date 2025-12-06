@@ -1,7 +1,7 @@
 from bge import logic
 import numpy as np
 from numpy.typing import NDArray
-from scripts.global_manager import GlobalConstants
+from scripts.global_manager import GlobalConstants, OrbitalData
 # from scripts.global_manager import GlobalControllerManager
 from wavefunction import wavefunction_superposition_multiple, guiding_equation_superposition_multiple
 
@@ -13,7 +13,9 @@ def reshape_orbital() -> None:
     obj = logic.getCurrentController().owner
     blender_obj = obj.blenderObject
 
-    orbital_data = logic.globalDict.get("orbitals", [])
+    material = blender_obj.active_material  # Get the first material
+
+    orbital_data: list[OrbitalData]  = logic.globalDict.get("orbitals", [])
 
     pys = blender_obj.particle_systems[0]
 
@@ -24,6 +26,17 @@ def reshape_orbital() -> None:
     for i, particle in enumerate(ps):
         if i < len(density_positions):
             particle.location = density_positions[i].tolist()
+
+    last_orbital_data_color = orbital_data[-1]["color"] if orbital_data else (0.0, 0.0, 0.0, 0.0, 0.0)
+
+    new_rgba_color = (
+        1 - (last_orbital_data_color[0] * (1 - last_orbital_data_color[3])),
+        1 - (last_orbital_data_color[1] * (1 - last_orbital_data_color[3])),
+        1 - (last_orbital_data_color[2] * (1 - last_orbital_data_color[3])),
+        last_orbital_data_color[4]
+    )
+
+    material.diffuse_color = new_rgba_color
 
 def create_density_plot(quantum_numbers: list[tuple[int, int, int]]) -> NDArray[np.float64]:
     '''
