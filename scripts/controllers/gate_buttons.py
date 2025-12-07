@@ -9,7 +9,7 @@ def collapse_state_vector() -> None:
     '''
     # Logic for collapsing GlobalStorage.state_vector
 
-    ve = logic.globalDict.get("state_vector", np.array([]))
+    ve = logic.globalDict.get("state_vector", np.array([0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0]))
     num_states = len(ve)
     
     probabilities = np.abs(ve)**2
@@ -21,6 +21,7 @@ def collapse_state_vector() -> None:
     new_ve[collapsed_index] = 1.0
     
     logic.globalDict["state_vector"] = new_ve
+    logic.globalDict["is_collapsed"] = True
 
 def hadamard_gate() -> None:
     '''
@@ -30,11 +31,9 @@ def hadamard_gate() -> None:
     # Logic for applying Hadamard gate to GlobalStorage.state_vector
 
     matrix = (1/np.sqrt(2)) * np.array([[1, 1], [1, -1]])
-    ve = logic.globalDict.get("state_vector", np.array([]))
+    apply_gate(matrix, logic.globalDict.get("selected_qubit_one", -1))
 
-    ve = apply_gate(ve, matrix, logic.globalDict.get("selected_qubit_one", -1))
-
-    logic.globalDict["state_vector"] = ve
+    logic.globalDict["is_collapsed"] = False
 
 def pauli_x_gate() -> None:
     '''
@@ -44,12 +43,8 @@ def pauli_x_gate() -> None:
     # Logic for applying Pauli-X gate to GlobalStorage.state_vector
 
     matrix = np.array([[0, 1], [1, 0]])
-    ve = logic.globalDict.get("state_vector", np.array([]))
 
-    ve = apply_gate(ve, matrix, logic.globalDict.get("selected_qubit_one", -1))
-
-    logic.globalDict["state_vector"] = ve
-
+    apply_gate(matrix, logic.globalDict.get("selected_qubit_one", -1))
 def pauli_y_gate() -> None:
     '''
     Applies the Pauli-Y gate to the state vector.
@@ -58,12 +53,8 @@ def pauli_y_gate() -> None:
     # Logic for applying Pauli-Y gate to GlobalStorage.state_vector
 
     matrix = np.array([[0, -1j], [1j, 0]], dtype=complex)
-    ve = logic.globalDict.get("state_vector", np.array([]))
 
-    ve = apply_gate(ve, matrix, logic.globalDict.get("selected_qubit_one", -1))
-
-    logic.globalDict["state_vector"] = ve
-
+    apply_gate(matrix, logic.globalDict.get("selected_qubit_one", -1))
 def pauli_z_gate() -> None:
     '''
     Applies the Pauli-Z gate to the state vector.
@@ -72,11 +63,8 @@ def pauli_z_gate() -> None:
     # Logic for applying Pauli-Z gate to GlobalStorage.state_vector
 
     matrix = np.array([[1, 0], [0, -1]])
-    ve = logic.globalDict.get("state_vector", np.array([]))
 
-    ve = apply_gate(ve, matrix, logic.globalDict.get("selected_qubit_one", -1))
-
-    logic.globalDict["state_vector"] = ve
+    apply_gate(matrix, logic.globalDict.get("selected_qubit_one", -1))
 
 def cnot_gate() -> None:
     '''
@@ -89,11 +77,8 @@ def cnot_gate() -> None:
                        [0, 1, 0, 0],
                        [0, 0, 0, 1],
                        [0, 0, 1, 0]])
-    ve = logic.globalDict.get("state_vector", np.array([]))
 
-    ve = apply_gate(ve, matrix, logic.globalDict.get("selected_qubit_one", -1))
-
-    logic.globalDict["state_vector"] = ve
+    apply_gate(matrix, logic.globalDict.get("selected_qubit_one", -1))
 
 def swap_gate() -> None:
     '''
@@ -106,11 +91,8 @@ def swap_gate() -> None:
                        [0, 0, 1, 0],
                        [0, 1, 0, 0],
                        [0, 0, 0, 1]])
-    ve = logic.globalDict.get("state_vector", np.array([]))
-
-    ve = apply_gate(ve, matrix, logic.globalDict.get("selected_qubit_one", -1))
-
-    logic.globalDict["state_vector"] = ve
+    
+    apply_gate(matrix, logic.globalDict.get("selected_qubit_one", -1))
 
 def imaginary_swap_gate() -> None:
     '''
@@ -123,13 +105,10 @@ def imaginary_swap_gate() -> None:
                        [0, 0, 1j, 0],
                        [0, 1j, 0, 0],
                        [0, 0, 0, 1]])
-    ve = logic.globalDict.get("state_vector", np.array([]))
+    
+    apply_gate(matrix, logic.globalDict.get("selected_qubit_one", -1))
 
-    ve = apply_gate(ve, matrix, logic.globalDict.get("selected_qubit_one", -1))
-
-    logic.globalDict["state_vector"] = ve
-
-def apply_gate(state_vector: np.ndarray, gate: np.ndarray, qubit_index: int) -> np.ndarray:
+def apply_gate(gate: np.ndarray, qubit_index: int) -> None:
     """
     Applies a quantum gate to a specific qubit in a multi-qubit system.
     
@@ -142,6 +121,11 @@ def apply_gate(state_vector: np.ndarray, gate: np.ndarray, qubit_index: int) -> 
     Returns:
         numpy.ndarray: The new state vector after applying the gate.
     """
+
+    if (logic.globalDict.get("is_collapsed", False)):
+        return  # No operation if the state is collapsed
+    
+    state_vector = logic.globalDict.get("state_vector", np.array([0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0]))
 
     num_qubits = 4
 
@@ -158,5 +142,7 @@ def apply_gate(state_vector: np.ndarray, gate: np.ndarray, qubit_index: int) -> 
     
     # Apply the full gate to the state vector
     new_state = np.dot(full_gate, state_vector)
+
+    logic.globalDict["state_vector"] = new_state
     
-    return new_state
+    return

@@ -3,6 +3,7 @@ from scripts.global_manager import GlobalConstants
 # from scripts.global_manager import GlobalControllerManager
 import numpy as np
 from numpy.typing import NDArray
+from math import sin, cos, asin
 
 def align_state_vector() -> None:
     '''
@@ -13,9 +14,9 @@ def align_state_vector() -> None:
     blender_obj = obj.blenderObject
 
     # Rotate the state vector to the desired location around the global origin
-    ve: NDArray[np.float64] = logic.globalDict.get("state_vector", np.array([]))
+    ve: NDArray[np.float64] = logic.globalDict.get("state_vector", np.array([0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0]))
 
-    current_angle = blender_obj.rotation_euler
+    [rx, ry, rz] = blender_obj.rotation_euler # type: ignore
     
     material = blender_obj.active_material # Get the first material
     color = material.diffuse_color  # Access the diffuse color
@@ -23,9 +24,9 @@ def align_state_vector() -> None:
     cmyka_color = convert_rgba_to_cmyka(color)
 
     old_vector: NDArray[np.float64] = np.zeros_like(ve)
-    old_vector[0] = (current_angle[0] / (2 * np.pi))
-    old_vector[1] = (current_angle[1] / (2 * np.pi))
-    old_vector[2] = (current_angle[2] / (2 * np.pi))
+    old_vector[0] = -sin(ry)
+    old_vector[1] = cos(ry)*sin(rx)
+    old_vector[2] = cos(ry)*cos(rx)
     old_vector[3] = cmyka_color[0]
     old_vector[4] = cmyka_color[1]
     old_vector[5] = cmyka_color[2]
@@ -40,9 +41,9 @@ def align_state_vector() -> None:
     new_ve = old_vector + (difference_vector * adjustment_factor)
 
     new_rotation = (
-        new_ve[0] * (2 * np.pi),
-        new_ve[1] * (2 * np.pi),
-        new_ve[2] * (2 * np.pi)
+        asin(new_ve[1]/cos(asin(-new_ve[0]))),
+        -asin(new_ve[0]),
+        blender_obj.rotation_euler[2]  # Keep the z-rotation unchanged
     )
 
     blender_obj.rotation_euler = new_rotation

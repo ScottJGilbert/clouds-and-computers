@@ -30,7 +30,7 @@ def derive_superposition(index: int) -> float:
     Derives the superposition value for a given qubit index.
     This is useful for quantum state manipulations.
     '''
-    ve = logic.globalDict.get("state_vector", np.array([]))
+    ve = logic.globalDict.get("state_vector", np.array([0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0]))
 
     if index < 0 or index >= math.log2(len(ve)):
         raise IndexError("Qubit index out of range.")
