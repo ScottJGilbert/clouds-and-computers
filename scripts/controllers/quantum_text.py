@@ -1,6 +1,6 @@
 from bge import logic
 
-def edit_principal_quantum_number():
+def edit_principal():
     '''
     Displays all available principal quantum numbers on the UI.
     '''
@@ -15,7 +15,7 @@ def edit_principal_quantum_number():
     text = "n: " + ", ".join(str(n) for n in principal_quantum_numbers)
     blender_obj.data.body = text
 
-def edit_azimuthal_quantum_number():
+def edit_azimuthal():
     '''
     Displays all available azimuthal quantum numbers on the UI.
     '''
@@ -30,7 +30,7 @@ def edit_azimuthal_quantum_number():
     text = "l: " + ", ".join(str(l) for l in azimuthal_quantum_numbers)
     blender_obj.data.body = text
 
-def edit_magnetic_quantum_number(): 
+def edit_magnetic(): 
     '''
     Displays all available magnetic quantum numbers on the UI.
     '''
