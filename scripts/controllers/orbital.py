@@ -2,8 +2,9 @@ from bge import logic
 import numpy as np
 from numpy.typing import NDArray
 from scripts.global_manager import GlobalConstants, OrbitalData
+from scripts.wavefunction import wavefunction_superposition_multiple 
+from scripts.wavefunction import guiding_equation_superposition_multiple
 # from scripts.global_manager import GlobalControllerManager
-from wavefunction import wavefunction_superposition_multiple, guiding_equation_superposition_multiple
 
 def reshape_orbital() -> None:
     '''
