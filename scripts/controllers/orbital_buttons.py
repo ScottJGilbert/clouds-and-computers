@@ -14,7 +14,7 @@ def save_orbital():
     m: magnetic quantum number  | -2 - 2
     '''
 
-    ve = logic.globalDict.get("state_vector", np.array([]))
+    ve = logic.globalDict.get("state_vector", np.array([0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0]))
 
     orbital_data: OrbitalData = {
         "n": round(ve[0].real * 3) + 1,
